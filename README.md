@@ -46,11 +46,9 @@ In this example:
 
 ## Next Steps
 
-Once you’ve got the basics down, you can explore more complex query-building scenarios, such as handling multiple parameters, optional parameters, and dynamic queries.
-
 Check out [GettingStarted.md](docs/GettingStarted.md) for installation instructions and a complete guide to get you up and running.
 
-For more advanced scenarios, check out [UsageExamples.md](docs/UsageExamples.md).
+For more advanced query-building scenarios, such as handling multiple parameters, optional parameters, and dynamic queries, check out [UsageExamples.md](docs/UsageExamples.md).
 
 ## Contributing
 
