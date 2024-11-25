@@ -32,7 +32,7 @@ Here is an example using **SqlTemplateGen** to build a SQL query from a template
 using SqlTemplateGen;
 
 var builder = new SqlTemplateBuilder("SELECT * FROM Users WHERE Id = {Id}");
-builder.AddTemplate("Id", 123);
+builder.AddParameter("Id", 123);
 
 string sql = builder.BuildQuery();
 Console.WriteLine(sql);

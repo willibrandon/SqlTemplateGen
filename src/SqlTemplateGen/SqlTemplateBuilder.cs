@@ -1,7 +1,7 @@
 ﻿namespace SqlTemplateGen;
 
 /// <summary>
-///  Builds SQL queries from templates by replacing placeholders with provided values.
+///  Provides functionality to build a SQL query from a template, with named parameters that are automatically replaced.
 /// </summary>
 public class SqlTemplateBuilder
 {
@@ -28,12 +28,12 @@ public class SqlTemplateBuilder
     /// <param name="value">The value to be used for this parameter.</param>
     /// <returns>The current <see cref="SqlTemplateBuilder"/> instance.</returns>
     /// <exception cref="ArgumentException">Thrown when <paramref name="placeholder"/> is null or whitespace.</exception>
-    public SqlTemplateBuilder AddTemplate(string placeholder, object value)
+    public SqlTemplateBuilder AddParameter(string name, object value)
     {
-        if (string.IsNullOrWhiteSpace(placeholder))
-            throw new ArgumentException("Placeholder cannot be null or empty.", nameof(placeholder));
+        if (string.IsNullOrWhiteSpace(name))
+            throw new ArgumentException("Name cannot be null or empty.", nameof(name));
 
-        _parameters.Add(new TemplateParameter(placeholder, value));
+        _parameters.Add(new TemplateParameter(name, value));
         return this;
     }
 
@@ -174,7 +174,7 @@ public class SqlTemplateBuilder
     /// <summary>
     /// Gets all parameters added to the template.
     /// </summary>
-    /// <returns>A list of all parameters.</returns>
+    /// <returns>A list of <see cref="TemplateParameter"/> objects representing the parameters added to the template.</returns>
     public List<TemplateParameter> GetParameters()
         => _parameters;
 }

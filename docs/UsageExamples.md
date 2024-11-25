@@ -15,8 +15,8 @@ using SqlTemplateGen;
 var builder = new SqlTemplateBuilder("SELECT * FROM Users WHERE Name = {Name} AND Age = {Age}");
 
 // Add parameters to the template
-builder.AddTemplate("Name", "John")
-       .AddTemplate("Age", 30);
+builder.AddParameter("Name", "John")
+       .AddParameter("Age", 30);
 
 // Build the final SQL query
 string query = builder.BuildQuery();
@@ -33,8 +33,8 @@ If you have multiple parameters in your template, you can add them all before bu
 ```csharp
 var builder = new SqlTemplateBuilder("SELECT * FROM Orders WHERE CustomerId = {CustomerId} AND OrderDate > {OrderDate}");
 
-builder.AddTemplate("CustomerId", 123)
-       .AddTemplate("OrderDate", new DateTime(2023, 1, 1));
+builder.AddParameter("CustomerId", 123)
+       .AddParameter("OrderDate", new DateTime(2023, 1, 1));
 
 string query = builder.BuildQuery();
 
@@ -50,7 +50,7 @@ The `SqlTemplateBuilder` will throw exceptions if the parameters do not match th
 
 ```csharp
 var builder = new SqlTemplateBuilder("SELECT * FROM Users WHERE Name = {Name} AND Age = {Age}");
-builder.AddTemplate("Name", "Alice");
+builder.AddParameter("Name", "Alice");
 
 try
 {
@@ -67,7 +67,7 @@ catch (InvalidOperationException ex)
 
 ```csharp
 var builder = new SqlTemplateBuilder("SELECT * FROM Users WHERE Name = {Name}");
-builder.AddTemplate("Age", 30);
+builder.AddParameter("Age", 30);
 
 try
 {
@@ -86,7 +86,7 @@ You can format a single parameter value using the `FormatParameter` method.
 
 ```csharp
 var builder = new SqlTemplateBuilder("SELECT * FROM Users WHERE Name = {Name}");
-builder.AddTemplate("Name", "John");
+builder.AddParameter("Name", "John");
 
 var parameter = builder.GetParameters().First();
 string formattedValue = builder.FormatParameter(parameter);
@@ -101,8 +101,8 @@ The `GetParameters` method allows you to retrieve the list of parameters added t
 
 ```csharp
 var builder = new SqlTemplateBuilder("SELECT * FROM Users WHERE Name = {Name} AND Age = {Age}");
-builder.AddTemplate("Name", "John")
-       .AddTemplate("Age", 30);
+builder.AddParameter("Name", "John")
+       .AddParameter("Age", 30);
 
 var parameters = builder.GetParameters();
 foreach (var param in parameters)
@@ -119,9 +119,9 @@ foreach (var param in parameters)
 ```csharp
 var builder = new SqlTemplateBuilder("INSERT INTO Orders (CustomerId, OrderDate, TotalAmount) VALUES ({CustomerId}, {OrderDate}, {TotalAmount})");
 
-builder.AddTemplate("CustomerId", 123)
-       .AddTemplate("OrderDate", new DateTime(2023, 5, 1))
-       .AddTemplate("TotalAmount", 99.99);
+builder.AddParameter("CustomerId", 123)
+       .AddParameter("OrderDate", new DateTime(2023, 5, 1))
+       .AddParameter("TotalAmount", 99.99);
 
 string query = builder.BuildQuery();
 
@@ -135,7 +135,7 @@ The library automatically escapes single quotes in string values to ensure prope
 
 ```csharp
 var builder = new SqlTemplateBuilder("SELECT * FROM Users WHERE Name = {Name}");
-builder.AddTemplate("Name", "O'Reilly");
+builder.AddParameter("Name", "O'Reilly");
 
 string query = builder.BuildQuery();
 
