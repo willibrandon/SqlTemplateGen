@@ -4,7 +4,7 @@ Welcome to the **SqlTemplateGen** library! This guide will help you get started 
 
 ## Prerequisites
 
-Make sure you have .NET 6 or later installed. If not, download and install the latest version of .NET from [here](https://dotnet.microsoft.com/download).
+Make sure you have .NET 8 or later installed. If not, download and install the latest version of .NET from [here](https://dotnet.microsoft.com/download).
 
 ## Installation
 
