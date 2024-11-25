@@ -40,4 +40,4 @@ In this example, we:
 
 ## Next Steps
 
-For more advanced query-building scenarios, such as handling multiple parameters, optional parameters, and dynamic queries, check out [UsageExamples.md](UsageExamples.md).
+For more advanced query-building scenarios, such as handling multiple parameters, optional parameters, and dynamic queries, check out [UsageExamples](https://github.com/willibrandon/SqlTemplateGen/blob/main/docs/UsageExamples.md).
