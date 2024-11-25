@@ -50,14 +50,14 @@ public class SqlTemplateBuilder
     {
         try
         {
-            // Ensure all parameters match placeholders in the template
+            // Ensure all parameters match placeholders in the template.
             var placeholderCount = _template.Split('{').Length - 1;
             if (_parameters.Count != placeholderCount)
             {
                 throw new InvalidOperationException($"Expected {placeholderCount} parameters, but found {_parameters.Count}.");
             }
 
-            // Replace placeholders with actual parameter values,
+            // Replace placeholders with actual parameter values.
             foreach (var param in _parameters)
             {
                 var placeholder = $"{{{param.Name}}}";
