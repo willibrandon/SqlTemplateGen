@@ -26,7 +26,7 @@ The `SqlTemplateBuilder` class in **SqlTemplateGen** allows you to generate SQL 
 using SqlTemplateGen;
 
 var builder = new SqlTemplateBuilder("SELECT * FROM Users WHERE Id = {Id}");
-builder.AddParameter("Id", 123);
+builder.AddTemplate("Id", 123);
 
 string sql = builder.BuildQuery();
 Console.WriteLine(sql);
