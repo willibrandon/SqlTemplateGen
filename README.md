@@ -41,7 +41,7 @@ Console.WriteLine(sql);
 
 In this example:
 - A query template with a placeholder `{Id}` is defined.
-- The parameter `{Id}` is replaced with the value `123`.
+- The template placeholder `{Id}` is replaced with the value `123`.
 - The final SQL query is built and printed.
 
 ## Next Steps

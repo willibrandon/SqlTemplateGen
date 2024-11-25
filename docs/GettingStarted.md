@@ -33,10 +33,10 @@ Console.WriteLine(sql);
 // Output: SELECT * FROM Users WHERE Id = 123
 ```
 
-In this example, we:
-1. Created a query template with a placeholder `{Id}`.
-2. Added a parameter to replace `{Id}` with the value `123`.
-3. Built the final query and printed it.
+In this example:
+- A query template with a placeholder `{Id}` is defined.
+- The template placeholder `{Id}` is replaced with the value `123`.
+- The final SQL query is built and printed.
 
 ## Next Steps
 
