@@ -1,0 +1,16 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<TargetFramework>net9.0</TargetFramework>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<Nullable>enable</Nullable>
+		<PackageId>SqlTemplateGen</PackageId>
+		<Version>1.0.0</Version>
+		<Authors>willibrandon</Authors>
+		<Description>A library for generating SQL queries from templates with parameterized values.</Description>
+		<RepositoryUrl>https://github.com/willibrandon/SqlTemplateGen</RepositoryUrl>
+		<PackageLicenseExpression>MIT</PackageLicenseExpression>
+		<PackageProjectUrl>https://github.com/willibrandon/SqlTemplateGen</PackageProjectUrl>
+	</PropertyGroup>
+
+</Project>
