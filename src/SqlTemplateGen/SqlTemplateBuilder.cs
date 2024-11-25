@@ -32,7 +32,6 @@ public class SqlTemplateBuilder
     public SqlTemplateBuilder AddParameter(string name, object value)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(name, nameof(name));
-        ArgumentNullException.ThrowIfNull(value, nameof(value));
 
         _parameters.Add(new TemplateParameter(name, value));
         return this;

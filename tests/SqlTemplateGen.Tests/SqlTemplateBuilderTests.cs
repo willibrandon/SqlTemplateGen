@@ -16,6 +16,38 @@ public class SqlTemplateBuilderTests
     }
 
     [Fact]
+    public void AddParameter_ShouldNotThrowException_WhenValueIsNull()
+    {
+        var builder = new SqlTemplateBuilder("SELECT * FROM Users WHERE Name = {Name}");
+
+        var exception = Record.Exception(() => builder.AddParameter("Name", null!));
+
+        Assert.Null(exception);
+    }
+
+    [Fact]
+    public void AddParameter_ShouldThrowException_WhenNameIsNullOrEmpty()
+    {
+        var builder = new SqlTemplateBuilder("SELECT * FROM Users WHERE Name = {Name}");
+
+        Assert.Throws<ArgumentException>(() => builder.AddParameter("", "John"));
+        Assert.Throws<ArgumentException>(() => builder.AddParameter(" ", "John"));
+    }
+
+    [Theory]
+    [InlineData(true, "1")]
+    [InlineData(false, "0")]
+    public void BooleanValues_AreFormattedCorrectly(bool input, string expected)
+    {
+        var builder = new SqlTemplateBuilder("SELECT {Value}");
+
+        builder.AddParameter("Value", input);
+        var result = builder.BuildQuery();
+
+        Assert.Equal($"SELECT {expected}", result);
+    }
+
+    [Fact]
     public void BuildQuery_ShouldReplaceParameterWithValue()
     {
         var builder = new SqlTemplateBuilder("SELECT * FROM Users WHERE Name = {Name} AND Age = {Age}");
@@ -35,6 +67,68 @@ public class SqlTemplateBuilderTests
 
         var exception = Assert.Throws<InvalidOperationException>(builder.BuildQuery);
         Assert.Equal("Expected 2 parameters, but found 1.", exception?.InnerException?.Message);
+    }
+
+    [Fact]
+    public void BuildQuery_ShouldThrowException_WhenPlaceholderIsNotFound()
+    {
+        var builder = new SqlTemplateBuilder("SELECT * FROM Users WHERE Name = {Name}");
+        builder.AddParameter("Age", 30);
+
+        var exception = Assert.Throws<InvalidOperationException>(builder.BuildQuery);
+        Assert.Equal("Placeholder '{Age}' not found in the SQL template.", exception?.InnerException?.Message);
+    }
+
+    [Fact]
+    public void Constructor_ShouldThrowException_WhenTemplateIsNullOrEmpty()
+    {
+        Assert.Throws<ArgumentNullException>(() => new SqlTemplateBuilder(null!));
+        Assert.Throws<ArgumentException>(() => new SqlTemplateBuilder(string.Empty));
+        Assert.Throws<ArgumentException>(() => new SqlTemplateBuilder("   "));
+    }
+
+    [Fact]
+    public void DateTimeTypes_AreFormattedCorrectly()
+    {
+        var builder = new SqlTemplateBuilder("VALUES ({DateTime}, {DateTimeOffset}, {TimeSpan})");
+        var dateTime = new DateTime(2024, 1, 1, 12, 0, 0);
+        var dateTimeOffset = new DateTimeOffset(2024, 1, 1, 12, 0, 0, TimeSpan.FromHours(1));
+        var timeSpan = TimeSpan.FromHours(2);
+
+        builder.AddParameter("DateTime", dateTime)
+               .AddParameter("DateTimeOffset", dateTimeOffset)
+               .AddParameter("TimeSpan", timeSpan);
+        var result = builder.BuildQuery();
+
+        Assert.Contains("'2024-01-01 12:00:00'", result);
+        Assert.Contains("'2024-01-01 12:00:00 +01:00'", result);
+        Assert.Contains("'02:00:00'", result);
+    }
+
+    [Fact]
+    public void EmptyString_IsHandledCorrectly()
+    {
+        var builder = new SqlTemplateBuilder("SELECT {Value}");
+
+        builder.AddParameter("Value", string.Empty);
+        var result = builder.BuildQuery();
+
+        Assert.Equal("SELECT ''", result);
+    }
+
+    [Fact]
+    public void FloatingPointTypes_AreFormattedCorrectly()
+    {
+        var builder = new SqlTemplateBuilder("SELECT * FROM Table WHERE Float={Float} AND Double={Double} AND Decimal={Decimal}");
+
+        builder.AddParameter("Float", 3.14f)
+               .AddParameter("Double", 3.14159265359d)
+               .AddParameter("Decimal", 123.456m);
+        var result = builder.BuildQuery();
+
+        Assert.Contains("Float=3.14", result);
+        Assert.Contains("Double=3.14159265359", result);
+        Assert.Contains("Decimal=123.456", result);
     }
 
     [Fact]
@@ -64,38 +158,77 @@ public class SqlTemplateBuilderTests
     }
 
     [Fact]
-    public void Constructor_ShouldThrowException_WhenTemplateIsNullOrEmpty()
+    public void IntegerTypes_AreFormattedCorrectly()
     {
-        Assert.Throws<ArgumentNullException>(() => new SqlTemplateBuilder(null!));
-        Assert.Throws<ArgumentException>(() => new SqlTemplateBuilder(string.Empty));
-        Assert.Throws<ArgumentException>(() => new SqlTemplateBuilder("   "));
+        var builder = new SqlTemplateBuilder("SELECT * FROM Table WHERE Int={Int} AND Long={Long} AND Short={Short}");
+
+        builder.AddParameter("Int", 42)
+               .AddParameter("Long", 9223372036854775807L)
+               .AddParameter("Short", (short)32767);
+        var result = builder.BuildQuery();
+
+        Assert.Equal("SELECT * FROM Table WHERE Int=42 AND Long=9223372036854775807 AND Short=32767", result);
     }
 
     [Fact]
-    public void AddParameter_ShouldThrowException_WhenNameIsNullOrEmpty()
+    public void NullableTypes_AreFormattedCorrectly()
     {
-        var builder = new SqlTemplateBuilder("SELECT * FROM Users WHERE Name = {Name}");
+        var builder = new SqlTemplateBuilder("VALUES ({NullInt}, {NonNullInt}, {NullDateTime})");
+        int? nullInt = null;
+        int? nonNullInt = 42;
+        DateTime? nullDateTime = null;
 
-        Assert.Throws<ArgumentException>(() => builder.AddParameter("", "John"));
-        Assert.Throws<ArgumentException>(() => builder.AddParameter(" ", "John"));
+        builder.AddParameter("NullInt", nullInt!)
+               .AddParameter("NonNullInt", nonNullInt)
+               .AddParameter("NullDateTime", nullDateTime!);
+        var result = builder.BuildQuery();
+
+        Assert.Contains("NULL", result);
+        Assert.Contains("42", result);
     }
 
     [Fact]
-    public void AddParameter_ShouldThrowException_WhenValueIsNull()
+    public void NumericEdgeCases_AreHandledCorrectly()
     {
-        var builder = new SqlTemplateBuilder("SELECT * FROM Users WHERE Name = {Name}");
+        var builder = new SqlTemplateBuilder("VALUES ({Min}, {Max}, {Zero})");
 
-        Assert.Throws<ArgumentNullException>(() => builder.AddParameter("Name", null!));
+        builder.AddParameter("Min", int.MinValue)
+               .AddParameter("Max", int.MaxValue)
+               .AddParameter("Zero", 0);
+        var result = builder.BuildQuery();
+
+        Assert.Contains($"{int.MinValue}", result);
+        Assert.Contains($"{int.MaxValue}", result);
+        Assert.Contains("0", result);
     }
 
     [Fact]
-    public void BuildQuery_ShouldThrowException_WhenPlaceholderIsNotFound()
+    public void SpecialTypes_AreFormattedCorrectly()
     {
-        var builder = new SqlTemplateBuilder("SELECT * FROM Users WHERE Name = {Name}");
-        builder.AddParameter("Age", 30);
+        var builder = new SqlTemplateBuilder("SELECT {Guid}, {Binary}, {Enum}");
+        var guid = Guid.NewGuid();
+        var binary = new byte[] { 0x12, 0x34, 0x56 };
+        var enumValue = DayOfWeek.Monday;
 
-        var exception = Assert.Throws<InvalidOperationException>(builder.BuildQuery);
-        Assert.Equal("Placeholder '{Age}' not found in the SQL template.", exception?.InnerException?.Message);
+        builder.AddParameter("Guid", guid)
+               .AddParameter("Binary", binary)
+               .AddParameter("Enum", enumValue);
+        var result = builder.BuildQuery();
+
+        Assert.Contains($"'{guid}'", result);
+        Assert.Contains("0x123456", result);
+        Assert.Contains("Monday", result);
+    }
+
+    [Fact]
+    public void StringWithSpecialCharacters_IsEscapedCorrectly()
+    {
+        var builder = new SqlTemplateBuilder("SELECT {Text}");
+        var text = "O'Neill's; DROP TABLE Students;--";
+
+        builder.AddParameter("Text", text);
+        var result = builder.BuildQuery();
+
+        Assert.Equal("SELECT 'O''Neill''s; DROP TABLE Students;--'", result);
     }
 }
-
