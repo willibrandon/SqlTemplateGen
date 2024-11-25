@@ -23,6 +23,18 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		README.md = README.md
 	EndProjectSection
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "eng", "eng", "{95430292-B4E9-492F-85D9-F27977605D85}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "build", "build", "{CCFC50B9-611E-49B7-9E7A-5B093B0141B2}"
+	ProjectSection(SolutionItems) = preProject
+		.github\workflows\ci.yml = .github\workflows\ci.yml
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "publish", "publish", "{453D597B-1C89-4BB8-BAE9-C49C6834ADAC}"
+	ProjectSection(SolutionItems) = preProject
+		.github\workflows\publish.yml = .github\workflows\publish.yml
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -44,5 +56,7 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{E4C42C5C-BC0E-4CCC-BA00-993E749AF1A5} = {F4EB2497-50D6-45A6-B5AF-9F5435796E4E}
 		{FF029E46-4533-4D66-82BB-3555DD0EE7D1} = {C54945C8-7D0B-4FA7-A56F-FFF09E49ED37}
+		{CCFC50B9-611E-49B7-9E7A-5B093B0141B2} = {95430292-B4E9-492F-85D9-F27977605D85}
+		{453D597B-1C89-4BB8-BAE9-C49C6834ADAC} = {95430292-B4E9-492F-85D9-F27977605D85}
 	EndGlobalSection
 EndGlobal
