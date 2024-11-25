@@ -2,7 +2,7 @@
 
 ![SqlTemplateGen Logo](./assets/logo.png)
 
-SqlTemplateGen is a lightweight library for building SQL queries from templates. It simplifies the generation of SQL queries with dynamic parameters, reducing the need for manual query construction.
+**SqlTemplateGen** is a .NET library for building SQL queries from templates with parameterized values. It simplifies the process of building dynamic SQL queries while promoting cleaner, more maintainable code.
 
 ## Features
 
