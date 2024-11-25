@@ -25,10 +25,10 @@ The `SqlTemplateBuilder` class in **SqlTemplateGen** allows you to generate SQL 
 ```csharp
 using SqlTemplateGen;
 
-var sqlTemplateBuilder = new SqlTemplateBuilder("SELECT * FROM Users WHERE Id = {Id}");
-sqlTemplateBuilder.AddParameter("Id", 123);
+var builder = new SqlTemplateBuilder("SELECT * FROM Users WHERE Id = {Id}");
+builder.AddParameter("Id", 123);
 
-string sql = sqlTemplateBuilder.BuildQuery();
+string sql = builder.BuildQuery();
 Console.WriteLine(sql); // Output: SELECT * FROM Users WHERE Id = 123
 ```
 
@@ -39,6 +39,6 @@ In this example, we:
 
 ## Next Steps
 
-Now that you've installed **SqlTemplateGen** and seen a basic example, you can explore more advanced scenarios, such as handling multiple parameters or building complex queries.
+Now that you've installed **SqlTemplateGen** and have seen a basic example, you can explore more advanced scenarios, such as handling multiple parameters or building complex queries.
 
 For more examples, check out the [UsageExamples.md](UsageExamples.md) file.
