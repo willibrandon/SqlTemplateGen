@@ -71,12 +71,13 @@ builder.AddParameter("Age", 30);
 
 try
 {
-    string query = builder.BuildQuery(); // This will throw an exception
+    // This will throw an exception.
+    string query = builder.BuildQuery();
 }
 catch (InvalidOperationException ex)
 {
     Console.WriteLine(ex.Message);
-    // Output: Placeholder '{Name}' not found in the SQL template.
+    // Output: Placeholder '{Age}' not found in the SQL template.
 }
 ```
 
