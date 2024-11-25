@@ -18,17 +18,17 @@ Alternatively, you can install it using NuGet Package Manager in Visual Studio.
 
 ## Create a Simple Query
 
-The `QueryBuilder` class in **SqlTemplateGen** allows you to generate SQL queries from templates. Here's how you can use it to create a simple query.
+The `SqlTemplateBuilder` class in **SqlTemplateGen** allows you to generate SQL queries from templates. Here's how you can use it to create a simple query.
 
 ### Example: Build a Query
 
 ```csharp
 using SqlTemplateGen;
 
-var queryBuilder = new QueryBuilder("SELECT * FROM Users WHERE Id = {Id}");
-queryBuilder.AddParameter("{Id}", 123);
+var sqlTemplateBuilder = new SqlTemplateBuilder("SELECT * FROM Users WHERE Id = {Id}");
+sqlTemplateBuilder.AddParameter("Id", 123);
 
-string sql = queryBuilder.BuildQuery();
+string sql = sqlTemplateBuilder.BuildQuery();
 Console.WriteLine(sql); // Output: SELECT * FROM Users WHERE Id = 123
 ```
 
