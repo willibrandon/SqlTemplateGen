@@ -40,6 +40,4 @@ In this example, we:
 
 ## Next Steps
 
-Now that you've installed **SqlTemplateGen** and have seen a basic example, you can explore more advanced scenarios, such as handling multiple parameters or building complex queries.
-
-For more examples, check out the [UsageExamples.md](UsageExamples.md) file.
+For more advanced query-building scenarios, such as handling multiple parameters, optional parameters, and dynamic queries, check out [UsageExamples.md](UsageExamples.md).
