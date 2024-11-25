@@ -78,6 +78,19 @@ public class SqlTemplateBuilder
     }
 
     /// <summary>
+    /// Formats a single parameter value as a valid SQL literal string.
+    /// </summary>
+    /// <param name="param">The <see cref="TemplateParameter"/> object to format.</param>
+    /// <returns>A string representing the formatted parameter value for SQL insertion.</returns>
+    /// <exception cref="ArgumentNullException">Thrown when the parameter is null.</exception>"
+    public static string? FormatParameter(TemplateParameter param)
+    {
+        ArgumentNullException.ThrowIfNull(param, nameof(param));
+
+        return FormatValueForSql(param.Value);
+    }
+
+    /// <summary>
     /// Formats the parameter value as a valid SQL literal string.
     /// </summary>
     /// <param name="value">The parameter value to format.</param>
@@ -165,17 +178,4 @@ public class SqlTemplateBuilder
     /// <returns>A list of <see cref="TemplateParameter"/> objects representing the parameters added to the template.</returns>
     public List<TemplateParameter> GetParameters()
         => _parameters;
-
-    /// <summary>
-    /// Formats a single parameter value as a valid SQL literal string.
-    /// </summary>
-    /// <param name="param">The <see cref="TemplateParameter"/> object to format.</param>
-    /// <returns>A string representing the formatted parameter value for SQL insertion.</returns>
-    /// <exception cref="ArgumentNullException">Thrown when the parameter is null.</exception>"
-    public static string? FormatParameter(TemplateParameter param)
-    {
-        ArgumentNullException.ThrowIfNull(param, nameof(param));
-
-        return FormatValueForSql(param.Value);
-    }
 }
