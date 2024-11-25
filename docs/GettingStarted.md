@@ -29,7 +29,8 @@ var builder = new SqlTemplateBuilder("SELECT * FROM Users WHERE Id = {Id}");
 builder.AddParameter("Id", 123);
 
 string sql = builder.BuildQuery();
-Console.WriteLine(sql); // Output: SELECT * FROM Users WHERE Id = 123
+Console.WriteLine(sql);
+// Output: SELECT * FROM Users WHERE Id = 123
 ```
 
 In this example, we:
