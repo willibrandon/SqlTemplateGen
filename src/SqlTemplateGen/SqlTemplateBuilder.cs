@@ -83,35 +83,96 @@ public class SqlTemplateBuilder
     /// <param name="value">The parameter value to format.</param>
     /// <returns>A string representing the formatted value for SQL insertion.</returns>
     /// <exception cref="ArgumentNullException">Thrown when the value is null.</exception>
-    private string FormatValueForSql(object value)
+    public static string? FormatValueForSql(object? value)
     {
-        ArgumentNullException.ThrowIfNull(value, nameof(value));
-
-        // Ensure we escape string values correctly to prevent SQL injection.
-        if (value is string stringValue)
+        // Handle null values.
+        if (value == null)
         {
-            // Handle SQL string escaping.
-            return $"'{stringValue.Replace("'", "''")}'";
+            return "NULL";
         }
 
-        // Add logic for other types as needed (e.g., DateTime, int).
-        return value.ToString() ?? throw new ArgumentNullException(nameof(value));
+        // Handle DateTime formatting.
+        if (value is DateTime dateTime)
+        {
+            // SQL standard datetime format: 'YYYY-MM-DD HH:MM:SS'.
+            return $"'{dateTime:yyyy-MM-dd HH:mm:ss}'";
+        }
+
+        // Handle DateTimeOffset formatting.
+        if (value is DateTimeOffset dateTimeOffset)
+        {
+            // Format DateTimeOffset as 'YYYY-MM-DD HH:MM:SS +00:00'.
+            return $"'{dateTimeOffset:yyyy-MM-dd HH:mm:ss zzz}'";
+        }
+
+        // Handle string formatting.
+        if (value is string str)
+        {
+            // Escape single quotes in strings to avoid SQL injection.
+            return $"'{str.Replace("'", "''")}'";
+        }
+
+        // Handle boolean formatting.
+        if (value is bool boolean)
+        {
+            // SQL representation of true/false.
+            return boolean ? "1" : "0";
+        }
+
+        // Handle Guid formatting.
+        if (value is Guid guid)
+        {
+            // Format as string.
+            return $"'{guid}'";
+        }
+
+        // Handle byte array (for binary data).
+        if (value is byte[] byteArray)
+        {
+            // SQL binary data format (e.g., '0x1234...').
+            return $"0x{Convert.ToHexString(byteArray)}";
+        }
+
+        // Handle decimal, float, double, int, long, short (numeric types).
+        if (value is decimal || value is double || value is float ||
+            value is int || value is long || value is short)
+        {
+            // These are used directly as numbers in SQL.
+            return value.ToString();
+        }
+
+        // Handle TimeSpan formatting (for time intervals).
+        if (value is TimeSpan timeSpan)
+        {
+            // Represent as a string in 'HH:mm:ss' format, useful for time intervals.
+            return $"'{timeSpan:hh\\:mm\\:ss}'";
+        }
+
+        // Handle nullable types (e.g., Nullable<int>, Nullable<DateTime>, etc.).
+        if (Nullable.GetUnderlyingType(value.GetType()) != null)
+        {
+            // Recursively format the value of the nullable type.
+            return FormatValueForSql(value.GetType().GetProperty("Value")?.GetValue(value, null));
+        }
+
+        // If the type is unsupported, just use its ToString() representation.
+        return value.ToString();
     }
 
     /// <summary>
     /// Retrieves all the parameters added to the builder.
     /// </summary>
-    /// <returns>A list of <see cref="SqlParameter"/> objects representing the parameters added to the template.</returns>
+    /// <returns>A list of <see cref="TemplateParameter"/> objects representing the parameters added to the template.</returns>
     public List<TemplateParameter> GetParameters()
         => _parameters;
 
     /// <summary>
     /// Formats a single parameter value as a valid SQL literal string.
     /// </summary>
-    /// <param name="param">The <see cref="SqlParameter"/> object to format.</param>
+    /// <param name="param">The <see cref="TemplateParameter"/> object to format.</param>
     /// <returns>A string representing the formatted parameter value for SQL insertion.</returns>
     /// <exception cref="ArgumentNullException">Thrown when the parameter is null.</exception>"
-    public string FormatParameter(TemplateParameter param)
+    public static string? FormatParameter(TemplateParameter param)
     {
         ArgumentNullException.ThrowIfNull(param, nameof(param));
 

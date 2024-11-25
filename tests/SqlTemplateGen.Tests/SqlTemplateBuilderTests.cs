@@ -44,7 +44,7 @@ public class SqlTemplateBuilderTests
         builder.AddParameter("Name", "John");
 
         var parameter = builder.GetParameters().First();
-        var formattedValue = builder.FormatParameter(parameter);
+        var formattedValue = SqlTemplateBuilder.FormatParameter(parameter);
 
         Assert.Equal("'John'", formattedValue);
     }
