@@ -3,11 +3,11 @@
 public class SqlTemplateBuilderTests
 {
     [Fact]
-    public void AddParameter_ShouldAddParameterToBuilder()
+    public void AddTemplate_ShouldAddParameterToBuilder()
     {
         var builder = new SqlTemplateBuilder("SELECT * FROM Users WHERE Name = {Name}");
 
-        builder.AddParameter("Name", "John");
+        builder.AddTemplate("Name", "John");
         var parameters = builder.GetParameters();
 
         Assert.Single(parameters);
@@ -16,22 +16,23 @@ public class SqlTemplateBuilderTests
     }
 
     [Fact]
-    public void AddParameter_ShouldNotThrowException_WhenValueIsNull()
+    public void AddTemplate_ShouldNotThrowException_WhenValueIsNull()
     {
         var builder = new SqlTemplateBuilder("SELECT * FROM Users WHERE Name = {Name}");
 
-        var exception = Record.Exception(() => builder.AddParameter("Name", null!));
+        var exception = Record.Exception(() => builder.AddTemplate("Name", null!));
 
         Assert.Null(exception);
     }
 
     [Fact]
-    public void AddParameter_ShouldThrowException_WhenNameIsNullOrEmpty()
+    public void AddTemplate_ShouldThrowException_WhenPlaceholderIsNullOrEmptyOrWhitespace()
     {
         var builder = new SqlTemplateBuilder("SELECT * FROM Users WHERE Name = {Name}");
 
-        Assert.Throws<ArgumentException>(() => builder.AddParameter("", "John"));
-        Assert.Throws<ArgumentException>(() => builder.AddParameter(" ", "John"));
+        Assert.Throws<ArgumentException>(() => builder.AddTemplate(null!, "John"));
+        Assert.Throws<ArgumentException>(() => builder.AddTemplate("", "John"));
+        Assert.Throws<ArgumentException>(() => builder.AddTemplate(" ", "John"));
     }
 
     [Theory]
@@ -41,7 +42,7 @@ public class SqlTemplateBuilderTests
     {
         var builder = new SqlTemplateBuilder("SELECT {Value}");
 
-        builder.AddParameter("Value", input);
+        builder.AddTemplate("Value", input);
         var result = builder.BuildQuery();
 
         Assert.Equal($"SELECT {expected}", result);
@@ -51,8 +52,8 @@ public class SqlTemplateBuilderTests
     public void BuildQuery_ShouldReplaceParameterWithValue()
     {
         var builder = new SqlTemplateBuilder("SELECT * FROM Users WHERE Name = {Name} AND Age = {Age}");
-        builder.AddParameter("Name", "John")
-               .AddParameter("Age", 30);
+        builder.AddTemplate("Name", "John")
+               .AddTemplate("Age", 30);
 
         var result = builder.BuildQuery();
 
@@ -63,7 +64,7 @@ public class SqlTemplateBuilderTests
     public void BuildQuery_ShouldThrowException_WhenParametersDoNotMatchPlaceholders()
     {
         var builder = new SqlTemplateBuilder("SELECT * FROM Users WHERE Name = {Name} AND Age = {Age}");
-        builder.AddParameter("Name", "John");
+        builder.AddTemplate("Name", "John");
 
         var exception = Assert.Throws<InvalidOperationException>(builder.BuildQuery);
         Assert.Equal("Expected 2 parameters, but found 1.", exception?.InnerException?.Message);
@@ -73,7 +74,7 @@ public class SqlTemplateBuilderTests
     public void BuildQuery_ShouldThrowException_WhenPlaceholderIsNotFound()
     {
         var builder = new SqlTemplateBuilder("SELECT * FROM Users WHERE Name = {Name}");
-        builder.AddParameter("Age", 30);
+        builder.AddTemplate("Age", 30);
 
         var exception = Assert.Throws<InvalidOperationException>(builder.BuildQuery);
         Assert.Equal("Placeholder '{Age}' not found in the SQL template.", exception?.InnerException?.Message);
@@ -95,9 +96,9 @@ public class SqlTemplateBuilderTests
         var dateTimeOffset = new DateTimeOffset(2024, 1, 1, 12, 0, 0, TimeSpan.FromHours(1));
         var timeSpan = TimeSpan.FromHours(2);
 
-        builder.AddParameter("DateTime", dateTime)
-               .AddParameter("DateTimeOffset", dateTimeOffset)
-               .AddParameter("TimeSpan", timeSpan);
+        builder.AddTemplate("DateTime", dateTime)
+               .AddTemplate("DateTimeOffset", dateTimeOffset)
+               .AddTemplate("TimeSpan", timeSpan);
         var result = builder.BuildQuery();
 
         Assert.Contains("'2024-01-01 12:00:00'", result);
@@ -110,7 +111,7 @@ public class SqlTemplateBuilderTests
     {
         var builder = new SqlTemplateBuilder("SELECT {Value}");
 
-        builder.AddParameter("Value", string.Empty);
+        builder.AddTemplate("Value", string.Empty);
         var result = builder.BuildQuery();
 
         Assert.Equal("SELECT ''", result);
@@ -121,9 +122,9 @@ public class SqlTemplateBuilderTests
     {
         var builder = new SqlTemplateBuilder("SELECT * FROM Table WHERE Float={Float} AND Double={Double} AND Decimal={Decimal}");
 
-        builder.AddParameter("Float", 3.14f)
-               .AddParameter("Double", 3.14159265359d)
-               .AddParameter("Decimal", 123.456m);
+        builder.AddTemplate("Float", 3.14f)
+               .AddTemplate("Double", 3.14159265359d)
+               .AddTemplate("Decimal", 123.456m);
         var result = builder.BuildQuery();
 
         Assert.Contains("Float=3.14", result);
@@ -135,7 +136,7 @@ public class SqlTemplateBuilderTests
     public void FormatParameter_ShouldFormatParameterForSql()
     {
         var builder = new SqlTemplateBuilder("SELECT * FROM Users WHERE Name = {Name}");
-        builder.AddParameter("Name", "John");
+        builder.AddTemplate("Name", "John");
 
         var parameter = builder.GetParameters().First();
         var formattedValue = SqlTemplateBuilder.FormatParameter(parameter);
@@ -147,8 +148,8 @@ public class SqlTemplateBuilderTests
     public void GetParameters_ShouldReturnAllAddedParameters()
     {
         var builder = new SqlTemplateBuilder("SELECT * FROM Users WHERE Name = {Name} AND Age = {Age}");
-        builder.AddParameter("Name", "John")
-               .AddParameter("Age", 30);
+        builder.AddTemplate("Name", "John")
+               .AddTemplate("Age", 30);
 
         var parameters = builder.GetParameters();
 
@@ -162,9 +163,9 @@ public class SqlTemplateBuilderTests
     {
         var builder = new SqlTemplateBuilder("SELECT * FROM Table WHERE Int={Int} AND Long={Long} AND Short={Short}");
 
-        builder.AddParameter("Int", 42)
-               .AddParameter("Long", 9223372036854775807L)
-               .AddParameter("Short", (short)32767);
+        builder.AddTemplate("Int", 42)
+               .AddTemplate("Long", 9223372036854775807L)
+               .AddTemplate("Short", (short)32767);
         var result = builder.BuildQuery();
 
         Assert.Equal("SELECT * FROM Table WHERE Int=42 AND Long=9223372036854775807 AND Short=32767", result);
@@ -178,9 +179,9 @@ public class SqlTemplateBuilderTests
         int? nonNullInt = 42;
         DateTime? nullDateTime = null;
 
-        builder.AddParameter("NullInt", nullInt!)
-               .AddParameter("NonNullInt", nonNullInt)
-               .AddParameter("NullDateTime", nullDateTime!);
+        builder.AddTemplate("NullInt", nullInt!)
+               .AddTemplate("NonNullInt", nonNullInt)
+               .AddTemplate("NullDateTime", nullDateTime!);
         var result = builder.BuildQuery();
 
         Assert.Contains("NULL", result);
@@ -192,9 +193,9 @@ public class SqlTemplateBuilderTests
     {
         var builder = new SqlTemplateBuilder("VALUES ({Min}, {Max}, {Zero})");
 
-        builder.AddParameter("Min", int.MinValue)
-               .AddParameter("Max", int.MaxValue)
-               .AddParameter("Zero", 0);
+        builder.AddTemplate("Min", int.MinValue)
+               .AddTemplate("Max", int.MaxValue)
+               .AddTemplate("Zero", 0);
         var result = builder.BuildQuery();
 
         Assert.Contains($"{int.MinValue}", result);
@@ -210,9 +211,9 @@ public class SqlTemplateBuilderTests
         var binary = new byte[] { 0x12, 0x34, 0x56 };
         var enumValue = DayOfWeek.Monday;
 
-        builder.AddParameter("Guid", guid)
-               .AddParameter("Binary", binary)
-               .AddParameter("Enum", enumValue);
+        builder.AddTemplate("Guid", guid)
+               .AddTemplate("Binary", binary)
+               .AddTemplate("Enum", enumValue);
         var result = builder.BuildQuery();
 
         Assert.Contains($"'{guid}'", result);
@@ -226,7 +227,7 @@ public class SqlTemplateBuilderTests
         var builder = new SqlTemplateBuilder("SELECT {Text}");
         var text = "O'Neill's; DROP TABLE Students;--";
 
-        builder.AddParameter("Text", text);
+        builder.AddTemplate("Text", text);
         var result = builder.BuildQuery();
 
         Assert.Equal("SELECT 'O''Neill''s; DROP TABLE Students;--'", result);

@@ -1,7 +1,7 @@
 ﻿namespace SqlTemplateGen;
 
 /// <summary>
-/// Provides functionality to build a SQL query from a template, with named parameters that are automatically replaced.
+///  Builds SQL queries from templates by replacing placeholders with provided values.
 /// </summary>
 public class SqlTemplateBuilder
 {
@@ -11,8 +11,8 @@ public class SqlTemplateBuilder
     /// <summary>
     /// Initializes a new instance of the <see cref="SqlTemplateBuilder"/> class.
     /// </summary>
-    /// <param name="template">The SQL template with named parameters (e.g., {ParameterName}).</param>
-    /// <exception cref="ArgumentException">Thrown when the SQL template is null or empty.</exception>
+    /// <param name="template">The SQL template string containing placeholders.</param>
+    /// <exception cref="ArgumentException">Thrown when <paramref name="template"/> is null or whitespace.</exception>
     public SqlTemplateBuilder(string template)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(template, nameof(template));
@@ -27,13 +27,13 @@ public class SqlTemplateBuilder
     /// <param name="name">The name of the parameter (e.g., {ParameterName}).</param>
     /// <param name="value">The value to be used for this parameter.</param>
     /// <returns>The current <see cref="SqlTemplateBuilder"/> instance.</returns>
-    /// <exception cref="ArgumentException">Thrown when the parameter name is null or empty.</exception>
-    /// <exception cref="ArgumentNullException">Thrown when the parameter value is null.</exception>
-    public SqlTemplateBuilder AddParameter(string name, object value)
+    /// <exception cref="ArgumentException">Thrown when <paramref name="placeholder"/> is null or whitespace.</exception>
+    public SqlTemplateBuilder AddTemplate(string placeholder, object value)
     {
-        ArgumentException.ThrowIfNullOrWhiteSpace(name, nameof(name));
+        if (string.IsNullOrWhiteSpace(placeholder))
+            throw new ArgumentException("Placeholder cannot be null or empty.", nameof(placeholder));
 
-        _parameters.Add(new TemplateParameter(name, value));
+        _parameters.Add(new TemplateParameter(placeholder, value));
         return this;
     }
 
@@ -172,9 +172,9 @@ public class SqlTemplateBuilder
     }
 
     /// <summary>
-    /// Retrieves all the parameters added to the builder.
+    /// Gets all parameters added to the template.
     /// </summary>
-    /// <returns>A list of <see cref="TemplateParameter"/> objects representing the parameters added to the template.</returns>
+    /// <returns>A list of all parameters.</returns>
     public List<TemplateParameter> GetParameters()
         => _parameters;
 }
