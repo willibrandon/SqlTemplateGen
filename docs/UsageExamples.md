@@ -71,8 +71,7 @@ builder.AddParameter("Age", 30);
 
 try
 {
-    // This will throw an exception.
-    string query = builder.BuildQuery();
+    string query = builder.BuildQuery(); // This will throw an exception.
 }
 catch (InvalidOperationException ex)
 {
