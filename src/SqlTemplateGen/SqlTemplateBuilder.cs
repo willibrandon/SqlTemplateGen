@@ -6,7 +6,7 @@
 public class SqlTemplateBuilder
 {
     private string _template;
-    private readonly List<SqlParameter> _parameters;
+    private readonly List<TemplateParameter> _parameters;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="SqlTemplateBuilder"/> class.
@@ -34,7 +34,7 @@ public class SqlTemplateBuilder
         ArgumentException.ThrowIfNullOrWhiteSpace(name, nameof(name));
         ArgumentNullException.ThrowIfNull(value, nameof(value));
 
-        _parameters.Add(new SqlParameter(name, value));
+        _parameters.Add(new TemplateParameter(name, value));
         return this;
     }
 
@@ -102,7 +102,7 @@ public class SqlTemplateBuilder
     /// Retrieves all the parameters added to the builder.
     /// </summary>
     /// <returns>A list of <see cref="SqlParameter"/> objects representing the parameters added to the template.</returns>
-    public List<SqlParameter> GetParameters()
+    public List<TemplateParameter> GetParameters()
         => _parameters;
 
     /// <summary>
@@ -111,7 +111,7 @@ public class SqlTemplateBuilder
     /// <param name="param">The <see cref="SqlParameter"/> object to format.</param>
     /// <returns>A string representing the formatted parameter value for SQL insertion.</returns>
     /// <exception cref="ArgumentNullException">Thrown when the parameter is null.</exception>"
-    public string FormatParameter(SqlParameter param)
+    public string FormatParameter(TemplateParameter param)
     {
         ArgumentNullException.ThrowIfNull(param, nameof(param));
 
