@@ -94,7 +94,6 @@ public class SqlTemplateBuilder
     /// </summary>
     /// <param name="value">The parameter value to format.</param>
     /// <returns>A string representing the formatted value for SQL insertion.</returns>
-    /// <exception cref="ArgumentNullException">Thrown when the value is null.</exception>
     public static string? FormatValueForSql(object? value)
     {
         // Handle null values.
