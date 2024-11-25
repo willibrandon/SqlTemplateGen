@@ -19,9 +19,9 @@ Alternatively, you can install it using the NuGet Package Manager in Visual Stud
 
 ## Documentation
 
-For detailed usage examples, please check the [UsageExamples.md](docs/UsageExamples.md) file.
-
 For installation and basic usage instructions, see the [GettingStarted.md](docs/GettingStarted.md) file.
+
+For detailed usage examples, please check the [UsageExamples.md](docs/UsageExamples.md) file.
 
 ## License
 
@@ -29,8 +29,4 @@ SqlTemplateGen is open-source and available under the MIT License. See the [LICE
 
 ## Contributing
 
-Contributions are welcome! If you'd like to contribute to **SqlTemplateGen**, please fork the repository, make your changes, and submit a pull request.
-
-## Contact
-
-For any questions or issues, feel free to open an issue on the GitHub repository.
+Contributions are welcome! If you would like to contribute to **SqlTemplateGen**, please fork the repository, make your changes, and submit a pull request.
